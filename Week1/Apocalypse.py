@@ -49,9 +49,7 @@ class Apocalypse(poc_grid.Grid):
         """
         self._human_list = []
         self._zombie_list = []
-        for row in xrange(self.get_grid_height()):
-            for col in xrange(self.get_grid_width()):
-                self.set_empty(row, col)
+        poc_grid.Grid.clear(self)
 
     def add_zombie(self, row, col):
         """
@@ -103,7 +101,40 @@ class Apocalypse(poc_grid.Grid):
         Shortest paths avoid obstacles and use four-way distances
         :param entity_type:
         """
-        return
+        width = self.get_grid_width()
+        height = self.get_grid_height()
+
+        visited = poc_grid.Grid(height, width)
+
+        init = width * height
+        distance_field = [[init for _ in xrange(width)] for _ in xrange(height)]
+
+        if entity_type == HUMAN:
+            aux = list(self._human_list)
+        else:
+            aux = list(self._zombie_list)
+
+        boundary = poc_queue.Queue()
+        for cell in aux:
+            boundary.enqueue(cell)
+            visited.set_full(cell[0], cell[1])
+            distance_field[cell[0]][cell[1]] = 0
+
+        # Breadth-First Search
+        while len(boundary) != 0:
+            cell = boundary.dequeue()
+            for neighbor_cell in self.four_neighbors(cell[0], cell[1]):
+                # check if neighbor_cell has not been visited and is passable
+                if visited.is_empty(neighbor_cell[0], neighbor_cell[1]) and \
+                        self.is_empty(neighbor_cell[0], neighbor_cell[1]):
+                    visited.set_full(neighbor_cell[0], neighbor_cell[1])
+                    # updates the best distance with the lower value
+                    distance_field[neighbor_cell[0]][neighbor_cell[1]] = \
+                        min(distance_field[neighbor_cell[0]][neighbor_cell[1]],
+                            distance_field[cell[0]][cell[1]] + 1)
+                    boundary.enqueue(neighbor_cell)
+
+        return distance_field
 
     def move_humans(self, zombie_distance_field):
         """
@@ -124,4 +155,4 @@ class Apocalypse(poc_grid.Grid):
 # Start up gui for simulation - You will need to write some code above
 # before this will work without errors
 
-poc_zombie_gui.run_gui(Apocalypse(30, 40))
+# poc_zombie_gui.run_gui(Apocalypse(30, 40))

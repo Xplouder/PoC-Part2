@@ -2,6 +2,7 @@ import unittest
 import collections
 from Apocalypse import Apocalypse
 from Apocalypse import HUMAN
+from Apocalypse import ZOMBIE
 
 
 class ApocalypseTests(unittest.TestCase):
@@ -27,7 +28,7 @@ class ApocalypseTests(unittest.TestCase):
 
     def test_compute_distance_field_zombie(self):
         obj = Apocalypse(3, 3, [], [(1, 1)], [])
-        result = obj.compute_distance_field(HUMAN)
+        result = obj.compute_distance_field(ZOMBIE)
         expected = [[2, 1, 2],
                     [1, 0, 1],
                     [2, 1, 2]]
