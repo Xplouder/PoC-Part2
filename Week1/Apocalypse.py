@@ -142,7 +142,26 @@ class Apocalypse(poc_grid.Grid):
         are allowed
         :param zombie_distance_field:
         """
-        pass
+        for human in list(self._human_list):
+            best_neighbors = [human]
+
+            neighbors = self.eight_neighbors(human[0], human[1])
+            for neighbor in neighbors:
+                # excludes neighbors not empty
+                if not poc_grid.Grid.is_empty(self, neighbor[0], neighbor[1]):
+                    continue
+
+                aux = (best_neighbors[0][0], best_neighbors[0][1])
+                best_neighbor_value = zombie_distance_field[aux[0]][aux[1]]
+                neighbor_value = zombie_distance_field[neighbor[0]][neighbor[1]]
+                if neighbor_value > best_neighbor_value:
+                    best_neighbors = [neighbor]
+                elif neighbor_value == best_neighbor_value:
+                    best_neighbors.append(neighbor)
+
+            random_best_neighbor = random.choice(best_neighbors)
+            self._human_list.remove(human)
+            self.add_human(random_best_neighbor[0], random_best_neighbor[1])
 
     def move_zombies(self, human_distance_field):
         """
@@ -150,9 +169,28 @@ class Apocalypse(poc_grid.Grid):
         are allowed
         :param human_distance_field:
         """
-        pass
+        for zombie in list(self._zombie_list):
+            best_neighbors = [zombie]
+
+            neighbors = self.four_neighbors(zombie[0], zombie[1])
+            for neighbor in neighbors:
+                # excludes neighbors not empty
+                if not poc_grid.Grid.is_empty(self, neighbor[0], neighbor[1]):
+                    continue
+
+                aux = (best_neighbors[0][0], best_neighbors[0][1])
+                best_neighbor_value = human_distance_field[aux[0]][aux[1]]
+                neighbor_value = human_distance_field[neighbor[0]][neighbor[1]]
+                if neighbor_value < best_neighbor_value:
+                    best_neighbors = [neighbor]
+                elif neighbor_value == best_neighbor_value:
+                    best_neighbors.append(neighbor)
+
+            random_best_neighbor = random.choice(best_neighbors)
+            self._zombie_list.remove(zombie)
+            self.add_zombie(random_best_neighbor[0], random_best_neighbor[1])
 
 # Start up gui for simulation - You will need to write some code above
 # before this will work without errors
 
-# poc_zombie_gui.run_gui(Apocalypse(30, 40))
+poc_zombie_gui.run_gui(Apocalypse(30, 40))

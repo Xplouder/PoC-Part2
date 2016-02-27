@@ -49,21 +49,42 @@ class ApocalypseTests(unittest.TestCase):
 
         self.assertEqual(expected, obj.num_zombies())
 
-    def test_move_human(self):
+    def test_move_human1(self):
         obj = Apocalypse(3, 3, [], [(2, 2)], [(1, 1)])
-        dist = [[4, 3, 2], [3, 2, 1], [2, 1, 0]]
+        dist = [[4, 3, 2],
+                [3, 2, 1],
+                [2, 1, 0]]
         obj.move_humans(dist)
         generator = obj.humans()
+        possible_locations = [(0, 0)]
 
         self.assertTrue(isinstance(generator, collections.Iterable))
+        self.assertIn(generator.next(), possible_locations)
+
+    def test_move_human2(self):
+        obj = Apocalypse(3, 3, [(0, 0), (0, 1), (0, 2), (1, 0)],
+                         [(2, 1)], [(1, 1)])
+        dist = [[9, 9, 9],
+                [9, 1, 2],
+                [1, 0, 1]]
+        obj.move_humans(dist)
+        generator = obj.humans()
+        possible_locations = [(1, 2)]
+
+        self.assertTrue(isinstance(generator, collections.Iterable))
+        self.assertIn(generator.next(), possible_locations)
 
     def test_move_zombies(self):
         obj = Apocalypse(3, 3, [], [(2, 2)], [(1, 1)])
-        dist = [[2, 1, 2], [1, 0, 1], [2, 1, 2]]
+        dist = [[2, 1, 2],
+                [1, 0, 1],
+                [2, 1, 2]]
         obj.move_zombies(dist)
         generator = obj.zombies()
+        possible_locations = [(1, 2), (2, 1)]
 
         self.assertTrue(isinstance(generator, collections.Iterable))
+        self.assertIn(generator.next(), possible_locations)
 
 
 if __name__ == '__main__':
