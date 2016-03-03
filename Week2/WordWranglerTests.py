@@ -16,6 +16,11 @@ class WorldWranglerTests(unittest.TestCase):
         result = WordWrangler.intersect(elements_list1, elements_list2)
         self.assertEqual(result, expected)
 
+    def test_merge_sort(self):
+        list1 = [2, 6, 8, 10]
+        expected = [2, 6, 8, 10]
+        result = WordWrangler.merge_sort(list1)
+        self.assertEqual(result, expected)
 
 if __name__ == '__main__':
     unittest.main()

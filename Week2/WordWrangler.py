@@ -43,6 +43,8 @@ def intersect(list1, list2):
     both list1 and list2.
 
     This function can be iterative.
+    :param list2:
+    :param list1:
     """
     intersection_list = []
     for element in list1:
@@ -61,8 +63,18 @@ def merge(list1, list2):
     either list1 or list2.
 
     This function can be iterative.
+    :param list2:
+    :param list1:
     """
-    return []
+    if not list1:
+        return list2
+    elif not list2:
+        return list1
+    else:
+        if list1[0] < list2[0]:
+            return [list1[0]] + merge(list1[1:], list2)
+        else:
+            return [list2[0]] + merge(list1, list2[1:])
 
 
 def merge_sort(list1):
@@ -72,8 +84,13 @@ def merge_sort(list1):
     Return a new sorted list with the same elements as list1.
 
     This function should be recursive.
+    :param list1:
     """
-    return []
+    if len(list1) < 2:
+        return list1
+    else:
+        mid = len(list1) // 2
+        return merge(merge_sort(list1[:mid]), merge_sort(list1[mid:]))
 
 
 # Function to generate all strings for the word wrangler game
@@ -111,7 +128,6 @@ def run():
                                      intersect, merge_sort,
                                      gen_all_strings)
     provided.run_game(wrangler)
-
 
 # Uncomment when you are ready to try the game
 # run()
