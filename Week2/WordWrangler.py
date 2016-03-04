@@ -2,14 +2,14 @@
 Student code for Word Wrangler game
 """
 
-# import urllib2
-# import codeskulptor
+import urllib2
 
-# try:
-#     import simplegui
-# except ImportError:
-#     import SimpleGUICS2Pygame.au as simplegui
-
+try:
+    import codeskulptor
+    import simplegui
+except ImportError:
+    import SimpleGUICS2Pygame.codeskulptor as codeskulptor
+    import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
 import poc_wrangler_provided as provided
 
@@ -104,21 +104,39 @@ def gen_all_strings(word):
     in word.
 
     This function should be recursive.
+    :param word:
     """
-    all_strings = [""]
-    if len(word) < 2:
-        all_strings.append(word)
-    else:
-        first = word[0]
-        rest_strings = gen_all_strings(word[1:])
 
-        all_strings.append(first)
-        for string in rest_strings:
-            for index in range(len(string) + 1):
-                all_strings.append(string[:index] + first + string[index:])
-            all_strings.append(string)
+    if len(word) == 0:
+        return ['']
+
+    all_strings = []
+    first = word[0]
+    rest_strings = gen_all_strings(word[1:])
+    all_strings.extend(rest_strings)
+
+    for string in rest_strings:
+        size = len(string) + 1
+        aux = [string[:idx] + first + string[idx:] for idx in range(size)]
+        all_strings.extend(aux)
 
     return all_strings
+
+    # if word == "":
+    #     return [""]
+    # head = word[0]
+    # tail = word[1:]
+    # rest_strings = gen_all_strings(tail)
+    # new_strings = []
+    # for string in rest_strings:
+    #     if len(string) == 0:
+    #         new_strings.append(head)
+    #         continue
+    #     length = len(string)
+    #     new_list = [string[:idx] + head + string[idx:] for idx in range(length + 1)]
+    #     new_strings.extend(new_list)
+    # rest_strings.extend(new_strings)
+    # return rest_strings
 
 
 # Function to load words from a file
@@ -128,8 +146,10 @@ def load_words(filename):
     Load word list from the file named filename.
 
     Returns a list of strings.
+    :param filename:
     """
-    return []
+    file_url = urllib2.urlopen(codeskulptor.file2url(filename))
+    return list(file_url.readlines())
 
 
 def run():
@@ -143,4 +163,4 @@ def run():
     provided.run_game(wrangler)
 
 # Uncomment when you are ready to try the game
-# run()
+run()

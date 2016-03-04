@@ -22,11 +22,23 @@ class WorldWranglerTests(unittest.TestCase):
         result = WordWrangler.merge_sort(list1)
         self.assertEqual(result, expected)
 
-    def test_gen_all_strings(self):
+    def test_gen_all_strings1(self):
         word = 'ab'
         expected = ['', 'b', 'a', 'ab', 'ba']
         result = WordWrangler.gen_all_strings(word)
-        self.assertListEqual(result, expected)
+
+        error_message = "expected (order doesn't matter) " + \
+                        str(expected) + " but received " + str(result)
+        self.assertItemsEqual(result, expected, error_message)
+
+    def test_gen_all_strings2(self):
+        word = 'a'
+        expected = ['', 'a']
+        result = WordWrangler.gen_all_strings(word)
+
+        error_message = "expected (order doesn't matter) " + \
+                        str(expected) + " but received " + str(result)
+        self.assertItemsEqual(result, expected, error_message)
 
 
 if __name__ == '__main__':
