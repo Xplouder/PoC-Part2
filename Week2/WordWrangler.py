@@ -122,22 +122,6 @@ def gen_all_strings(word):
 
     return all_strings
 
-    # if word == "":
-    #     return [""]
-    # head = word[0]
-    # tail = word[1:]
-    # rest_strings = gen_all_strings(tail)
-    # new_strings = []
-    # for string in rest_strings:
-    #     if len(string) == 0:
-    #         new_strings.append(head)
-    #         continue
-    #     length = len(string)
-    #     new_list = [string[:idx] + head + string[idx:] for idx in range(length + 1)]
-    #     new_strings.extend(new_list)
-    # rest_strings.extend(new_strings)
-    # return rest_strings
-
 
 # Function to load words from a file
 
