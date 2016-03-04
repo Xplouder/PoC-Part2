@@ -105,7 +105,20 @@ def gen_all_strings(word):
 
     This function should be recursive.
     """
-    return []
+    all_strings = [""]
+    if len(word) < 2:
+        all_strings.append(word)
+    else:
+        first = word[0]
+        rest_strings = gen_all_strings(word[1:])
+
+        all_strings.append(first)
+        for string in rest_strings:
+            for index in range(len(string) + 1):
+                all_strings.append(string[:index] + first + string[index:])
+            all_strings.append(string)
+
+    return all_strings
 
 
 # Function to load words from a file

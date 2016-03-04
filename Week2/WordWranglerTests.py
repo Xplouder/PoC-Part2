@@ -22,5 +22,12 @@ class WorldWranglerTests(unittest.TestCase):
         result = WordWrangler.merge_sort(list1)
         self.assertEqual(result, expected)
 
+    def test_gen_all_strings(self):
+        word = 'ab'
+        expected = ['', 'b', 'a', 'ab', 'ba']
+        result = WordWrangler.gen_all_strings(word)
+        self.assertListEqual(result, expected)
+
+
 if __name__ == '__main__':
     unittest.main()
