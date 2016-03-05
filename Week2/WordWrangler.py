@@ -66,15 +66,35 @@ def merge(list1, list2):
     :param list2:
     :param list1:
     """
-    if not list1:
-        return list2
-    elif not list2:
-        return list1
-    else:
-        if list1[0] < list2[0]:
-            return [list1[0]] + merge(list1[1:], list2)
-        else:
-            return [list2[0]] + merge(list1, list2[1:])
+    list_aux = list(list1)
+    list_aux.extend(list2)
+    list_size = len(list_aux)
+
+    if len(list_aux) == 0:
+        return list_aux
+
+    while True:
+        is_sorted = True
+        for idx, val in enumerate(list_aux):
+            # +2 = 1 (index start at 0) + 1 (position of next element)
+            if idx + 2 <= list_size:
+                if list_aux[idx + 1] < list_aux[idx]:
+                    temp = list_aux[idx]
+                    list_aux[idx] = list_aux[idx + 1]
+                    list_aux[idx + 1] = temp
+                    is_sorted = False
+
+        if list_size % 2 != 0:
+            if list_aux[list_size - 1] < list_aux[list_size - 2]:
+                temp = list_aux[list_size - 1]
+                list_aux[list_size - 1] = list_aux[idx - 2]
+                list_aux[idx - 2] = temp
+                is_sorted = False
+
+        if is_sorted:
+            break
+
+    return list_aux
 
 
 def merge_sort(list1):
@@ -145,6 +165,7 @@ def run():
                                      intersect, merge_sort,
                                      gen_all_strings)
     provided.run_game(wrangler)
+
 
 # Uncomment when you are ready to try the game
 run()
