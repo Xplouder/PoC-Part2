@@ -133,7 +133,7 @@ def load_words(filename):
     :param filename:
     """
     file_url = urllib2.urlopen(codeskulptor.file2url(filename))
-    return list(file_url.readlines())
+    return [word.rstrip() for word in file_url]
 
 
 def run():
