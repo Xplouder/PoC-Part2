@@ -1,5 +1,6 @@
 import unittest
 import WordWrangler
+import random
 
 
 class WorldWranglerTests(unittest.TestCase):
@@ -19,6 +20,12 @@ class WorldWranglerTests(unittest.TestCase):
     def test_merge_sort(self):
         list1 = [2, 6, 8, 10]
         expected = [2, 6, 8, 10]
+        result = WordWrangler.merge_sort(list1)
+        self.assertEqual(result, expected)
+
+    def test_merge_sort_random(self):
+        list1 = random.sample(range(50), 10)
+        expected = sorted(list1)
         result = WordWrangler.merge_sort(list1)
         self.assertEqual(result, expected)
 

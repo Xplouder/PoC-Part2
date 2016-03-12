@@ -62,39 +62,32 @@ def merge(list1, list2):
     Returns a new sorted list containing those elements that are in
     either list1 or list2.
 
+    Algorithm: The body of merge consists of a while loop that iterates until
+    one of the lists list1 and list2 is empty. Each iteration of the loop
+    compares the first element in each list, pops the smaller element from its
+    containing list and appends this element to the answer. Once one list is
+    exhausted, the entries in the remaining list are appended to the answer.
+
+
     This function can be iterative.
     :param list2:
     :param list1:
     """
-    list_aux = list(list1)
-    list_aux.extend(list2)
-    list_size = len(list_aux)
+    sorted_list = []
+    while list1 and list2:
+        if list1[0] < list2[0]:
+            sorted_list.append(list1.pop(0))
+        else:
+            sorted_list.append(list2.pop(0))
 
-    if len(list_aux) == 0:
-        return list_aux
+    # not empty verification
+    # not list1 => list1 != []
+    if not list1:
+        sorted_list += list2
+    elif not list2:
+        sorted_list += list1
 
-    while True:
-        is_sorted = True
-        for idx, val in enumerate(list_aux):
-            # +2 = 1 (index start at 0) + 1 (position of next element)
-            if idx + 2 <= list_size:
-                if list_aux[idx + 1] < list_aux[idx]:
-                    temp = list_aux[idx]
-                    list_aux[idx] = list_aux[idx + 1]
-                    list_aux[idx + 1] = temp
-                    is_sorted = False
-
-        if list_size % 2 != 0:
-            if list_aux[list_size - 1] < list_aux[list_size - 2]:
-                temp = list_aux[list_size - 1]
-                list_aux[list_size - 1] = list_aux[idx - 2]
-                list_aux[idx - 2] = temp
-                is_sorted = False
-
-        if is_sorted:
-            break
-
-    return list_aux
+    return sorted_list
 
 
 def merge_sort(list1):
@@ -168,4 +161,4 @@ def run():
 
 
 # Uncomment when you are ready to try the game
-run()
+# run()
