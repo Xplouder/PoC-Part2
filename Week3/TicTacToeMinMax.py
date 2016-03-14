@@ -19,8 +19,8 @@ SCORES = {provided.PLAYERX: 1,
           provided.PLAYERO: -1}
 
 DEBUG_BOARDS = [[]]
-DEBUG_MM = True
-# DEBUG_TREE = Tree()
+DEBUG_MM = False
+RECURSIVE_COUNTER = 0
 
 
 def mm_move(board, player):
@@ -34,8 +34,9 @@ def mm_move(board, player):
     :param player:
     """
     # --------------------------------------------------------------------------
-    global DEBUG_BOARDS
+    global DEBUG_BOARDS, RECURSIVE_COUNTER
     if DEBUG_MM:
+        RECURSIVE_COUNTER += 1
         tree_depth = board.get_dim() ** 2 - len(board.get_empty_squares())
         while len(DEBUG_BOARDS) < tree_depth+2:
             DEBUG_BOARDS.append([])
@@ -80,11 +81,12 @@ def move_wrapper(board, player, trials):
 # Both should be commented out when you submit for
 # testing to save time.
 
-# provided.play_game(move_wrapper, 1, False)
-poc_ttt_gui.run_gui(3, provided.PLAYERO, move_wrapper, 1, False)
+provided.play_game(move_wrapper, 1, False)
+# poc_ttt_gui.run_gui(3, provided.PLAYERO, move_wrapper, 1, False)
 
 if DEBUG_MM:
     for depth in range(len(DEBUG_BOARDS)):
         print "Depth:", depth
         for board in (DEBUG_BOARDS[depth]):
             print board
+    print "Recursive counts: " + str(RECURSIVE_COUNTER)
