@@ -18,31 +18,9 @@ SCORES = {provided.PLAYERX: 1,
           provided.DRAW: 0,
           provided.PLAYERO: -1}
 
-def minimax(board, player):
-    """
-    Make a move through minimax method.
-    """
-    check_res = board.check_win()
-    if check_res != None:
-        return SCORES[check_res] , (-1,-1)
-    else:
-        empty_list = board.get_empty_squares()
-        com_score = -2
-        max_score = -2
-        max_each = (-1,-1)
-        changed_player = provided.switch_player(player)
-        for each in empty_list:
-            cur_board = board.clone()
-            cur_board.move(each[0], each[1], player)
-            cur_score_tuple = minimax(cur_board, changed_player)
-            cur_score = cur_score_tuple[0]
-            if cur_score * SCORES[player] > com_score:
-                com_score = cur_score * SCORES[player] # used for compare
-                max_score = cur_score  # used for return a value
-                max_each = each
-            if com_score == 1:
-                return max_score, max_each
-        return max_score, max_each
+DEBUG_BOARDS = [[]]
+DEBUG_MM = True
+# DEBUG_TREE = Tree()
 
 
 def mm_move(board, player):
@@ -55,6 +33,14 @@ def mm_move(board, player):
     :param board:
     :param player:
     """
+    # --------------------------------------------------------------------------
+    global DEBUG_BOARDS
+    if DEBUG_MM:
+        tree_depth = board.get_dim() ** 2 - len(board.get_empty_squares())
+        while len(DEBUG_BOARDS) < tree_depth+2:
+            DEBUG_BOARDS.append([])
+        DEBUG_BOARDS[tree_depth].append(board)
+    # --------------------------------------------------------------------------
 
     if board.check_win() is not None:
         return SCORES[board.check_win()], (-1, -1)
@@ -89,7 +75,6 @@ def move_wrapper(board, player, trials):
     assert move[1] != (-1, -1), "returned illegal move (-1, -1)"
     return move[1]
 
-
 # Test game with the console or the GUI.
 # Uncomment whichever you prefer.
 # Both should be commented out when you submit for
@@ -97,3 +82,9 @@ def move_wrapper(board, player, trials):
 
 # provided.play_game(move_wrapper, 1, False)
 poc_ttt_gui.run_gui(3, provided.PLAYERO, move_wrapper, 1, False)
+
+if DEBUG_MM:
+    for depth in range(len(DEBUG_BOARDS)):
+        print "Depth:", depth
+        for board in (DEBUG_BOARDS[depth]):
+            print board
