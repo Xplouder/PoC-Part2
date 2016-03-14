@@ -27,10 +27,10 @@ class TTTBoard:
 
         self._dim = dim
         self._reverse = reverse
-        if board == None:
+        if board is None:
             # Create empty board
-            self._board = [[EMPTY for dummycol in range(dim)]
-                           for dummyrow in range(dim)]
+            self._board = [[EMPTY for _ in range(dim)]
+                           for _ in range(dim)]
         else:
             # Copy board grid
             self._board = [[board[row][col] for col in range(dim)]
@@ -63,6 +63,8 @@ class TTTBoard:
         """
         Returns one of the three constants EMPTY, PLAYERX, or PLAYERO
         that correspond to the contents of the board at position (row, col).
+        :param row:
+        :param col:
          """
         return self._board[row][col]
 
@@ -144,6 +146,7 @@ def switch_player(player):
     Convenience function to switch players.
 
     Returns other player.
+    :param player:
     """
     if player == PLAYERX:
         return PLAYERO
