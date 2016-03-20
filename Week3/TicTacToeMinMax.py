@@ -43,8 +43,9 @@ def mm_move(board, player):
         DEBUG_BOARDS[tree_depth].append(board)
     # --------------------------------------------------------------------------
 
-    if board.check_win() is not None:
-        return SCORES[board.check_win()], (-1, -1)
+    check_win_result = board.check_win()
+    if check_win_result is not None:
+        return SCORES[check_win_result], (-1, -1)
 
     opponent = provided.switch_player(player)
     # initialization with "worst" possible values
