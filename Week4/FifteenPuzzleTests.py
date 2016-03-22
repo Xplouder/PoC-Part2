@@ -191,12 +191,12 @@ class FifteenPuzzleTests(unittest.TestCase):
         self.assertEqual(result, expected)
 
     def test_solve_row0_tile(self):
-        # puzzle = FifteenPuzzle.Puzzle(3, 3, [[1, 2, 0],
-        #                                      [3, 4, 5],
-        #                                      [6, 7, 8]])
-        # result = puzzle.solve_row0_tile(2)
-        # expected = 'ld'
-        # self.assertEqual(result, expected)
+        puzzle = FifteenPuzzle.Puzzle(3, 3, [[1, 2, 0],
+                                             [3, 4, 5],
+                                             [6, 7, 8]])
+        result = puzzle.solve_row0_tile(2)
+        expected = 'ld'
+        self.assertEqual(result, expected)
         # ----------------------------------------------------------------------
         puzzle = FifteenPuzzle.Puzzle(4, 4, [[2, 4, 5, 0],
                                              [3, 6, 1, 7],
@@ -220,6 +220,128 @@ class FifteenPuzzleTests(unittest.TestCase):
                                              [15, 16, 17, 18, 19]])
         result = puzzle.solve_row0_tile(3)
         expected = 'lduldurdlurrdluldrruld'
+        self.assertEqual(result, expected)
+
+    def test_solve_row1_tile(self):
+        puzzle = FifteenPuzzle.Puzzle(3, 3, [[2, 5, 4],
+                                             [1, 3, 0],
+                                             [6, 7, 8]])
+        result = puzzle.solve_row1_tile(2)
+        expected = 'uldruldur'
+        self.assertEqual(result, expected)
+        # ----------------------------------------------------------------------
+        self.assertIs(type(puzzle.solve_row1_tile(2)), str)
+        # ----------------------------------------------------------------------
+        puzzle = FifteenPuzzle.Puzzle(3, 3, [[1, 4, 2],
+                                             [3, 5, 0],
+                                             [6, 7, 8]])
+        result = puzzle.solve_row1_tile(2)
+        expected = 'lur'
+        self.assertEqual(result, expected)
+        # ----------------------------------------------------------------------
+        puzzle = FifteenPuzzle.Puzzle(3, 5, [[1, 2, 7, 3, 4],
+                                             [6, 5, 0, 8, 9],
+                                             [10, 11, 12, 13, 14]])
+        result = puzzle.solve_row1_tile(2)
+        expected = 'uldur'
+        self.assertEqual(result, expected)
+        # ----------------------------------------------------------------------
+        puzzle = FifteenPuzzle.Puzzle(4, 4, [[1, 2, 6, 3],
+                                             [7, 4, 5, 0],
+                                             [8, 9, 10, 11],
+                                             [12, 13, 14, 15]])
+        result = puzzle.solve_row1_tile(3)
+        expected = 'lllurrdlurrdlur'
+        self.assertEqual(result, expected)
+        # ----------------------------------------------------------------------
+        puzzle = FifteenPuzzle.Puzzle(4, 4, [[1, 7, 4, 2],
+                                             [3, 5, 6, 0],
+                                             [8, 9, 10, 11],
+                                             [12, 13, 14, 15]])
+        result = puzzle.solve_row1_tile(3)
+        expected = 'ulldrruldruldur'
+        self.assertEqual(result, expected)
+        # ----------------------------------------------------------------------
+        puzzle = FifteenPuzzle.Puzzle(3, 5, [[1, 7, 2, 3, 4],
+                                             [6, 5, 0, 8, 9],
+                                             [10, 11, 12, 13, 14]])
+        result = puzzle.solve_row1_tile(2)
+        expected = 'uldruldur'
+        self.assertEqual(result, expected)
+        # ----------------------------------------------------------------------
+        puzzle = FifteenPuzzle.Puzzle(3, 5, [[1, 2, 3, 4, 5],
+                                             [6, 7, 8, 9, 0],
+                                             [10, 11, 12, 13, 14]])
+        result = puzzle.solve_row1_tile(4)
+        expected = 'lur'
+        self.assertEqual(result, expected)
+
+    def test_solve_2x2(self):
+        state = FifteenPuzzle.Puzzle(3, 3, [[4, 3, 2],
+                                            [1, 0, 5],
+                                            [6, 7, 8]])
+        result = state.solve_2x2()
+        expected = 'uldrul'
+        self.assertEqual(result, expected)
+        # ----------------------------------------------------------------------
+        self.assertIs(type(state.solve_2x2()), str)
+        # ----------------------------------------------------------------------
+        state = FifteenPuzzle.Puzzle(3, 5, [[5, 1, 2, 3, 4],
+                                            [6, 0, 7, 8, 9],
+                                            [10, 11, 12, 13, 14]])
+        result = state.solve_2x2()
+        expected = 'ulrdlu'
+        self.assertEqual(result, expected)
+        # ----------------------------------------------------------------------
+        state = FifteenPuzzle.Puzzle(2, 2, [[3, 2],
+                                            [1, 0]])
+        result = state.solve_2x2()
+        expected = 'uldrul'
+        self.assertEqual(result, expected)
+        # ----------------------------------------------------------------------
+        state = FifteenPuzzle.Puzzle(2, 2, [[1, 3],
+                                            [2, 0]])
+        result = state.solve_2x2()
+        expected = 'ul'
+        self.assertEqual(result, expected)
+        # ----------------------------------------------------------------------
+        state = FifteenPuzzle.Puzzle(2, 2, [[0, 1],
+                                            [2, 3]])
+        result = state.solve_2x2()
+        expected = ''
+        self.assertEqual(result, expected)
+
+    def test_solve_puzzle(self):
+        state = FifteenPuzzle.Puzzle(4, 5, [[15, 16, 0, 3, 4],
+                                            [5, 6, 7, 8, 9],
+                                            [10, 11, 12, 13, 14],
+                                            [1, 2, 17, 18, 19]])
+        result = state.solve_puzzle()
+        expected = 'rrdddulduldulduuulddrulddrulduruulddruldruldrdlurdluurdd' \
+                   'lurrrrulduldulduldurlruldrdlurdluurddlurrrruldurlduldurl' \
+                   'duldurlduldurdlurrdluldrrulduldrul'
+        self.assertEqual(result, expected)
+        # ----------------------------------------------------------------------
+        state = FifteenPuzzle.Puzzle(4, 4, [[14, 12, 8, 5],
+                                            [0, 2, 15, 6],
+                                            [4, 13, 7, 9],
+                                            [10, 11, 3, 1]])
+        result = state.solve_puzzle()
+        expected = 'rrrdduullurrdldrulddrulduuulldrruldrulddrulddrulduurulld' \
+                   'drulddrulduruuldrulddruldruldrdlurdluurddlurrrllurrdlllu' \
+                   'rrdluulddruldururdlludruldruldrdlurdluurddlurrrulldrruld' \
+                   'ruldurldlurdlurrdluldrruldlurldulrdlu'
+        self.assertEqual(result, expected)
+        # ----------------------------------------------------------------------
+        state = FifteenPuzzle.Puzzle(4, 4, [[2, 11, 12, 13],
+                                            [9, 4, 6, 1],
+                                            [5, 7, 8, 3],
+                                            [10, 0, 14, 15]])
+        result = state.solve_puzzle()
+        expected = 'rrlluuurrdllurdlludrulddrulddruldururullddruldruldrdlurd' \
+                   'luurddlurrruldruldllurrdluulddruldurrulldruldrdlurdluurd' \
+                   'dlurrrlllurrdlurrdlurldulldrruldruldurlduldurdlurrdluldr' \
+                   'rulduldrul'
         self.assertEqual(result, expected)
 
 

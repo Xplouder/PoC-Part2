@@ -315,8 +315,13 @@ class Puzzle:
         Solve the tile in row one at the specified column
         Updates puzzle and returns a move string
         """
-        # replace with your code
-        return ""
+        # assert self.row1_invariant(target_col)
+        row, column = self.current_position(1, target_col)
+        move_it = self.move_tile(1, target_col, row, column)
+        move_it += 'ur'
+
+        self.update_puzzle(move_it)
+        return move_it
 
     ###########################################################
     # Phase 3 methods
@@ -326,16 +331,59 @@ class Puzzle:
         Solve the upper left 2x2 part of the puzzle
         Updates the puzzle and returns a move string
         """
-        # replace with your code
-        return ""
+        move_sequence = ''
+        first_step = ''
+
+        if self.get_number(1, 1) == 0:
+            first_step += 'ul'
+            self.update_puzzle(first_step)
+            # got lucky, all tiles are already in place
+            if (0, 1) == self.current_position(0, 1) and \
+                            (1, 1) == self.current_position(1, 1):
+                return first_step
+
+            # pick a move depending on current configuration
+            if self.get_number(0, 1) < self.get_number(1, 0):
+                move_sequence += 'rdlu'
+            else:
+                move_sequence += 'drul'
+            self.update_puzzle(move_sequence)
+
+        return first_step + move_sequence
 
     def solve_puzzle(self):
         """
         Generate a solution string for a puzzle
         Updates the puzzle and returns a move string
         """
-        # replace with your code
-        return ""
+        move_sequance = ''
+
+        # first off, need 0 tile in the right lower corner
+        row = self.get_height() - 1
+        column = self.get_width() - 1
+        # unpack tile row and column values
+        row_current, column_current = self.current_position(0, 0)
+        # calculate deltas
+        column_delta = column_current - column
+        row_delta = row_current - row
+        step = abs(column_delta) * 'r' + abs(row_delta) * 'd'
+        self.update_puzzle(step)
+        move_sequance += step
+
+        # bottom m-2 rows in order from bottom to top and right to left
+        for dummy_row in range(row, 1, -1):
+            for dummy_column in range(column, 0, -1):
+                move_sequance += self.solve_interior_tile(dummy_row, dummy_column)
+            move_sequance += self.solve_col0_tile(dummy_row)
+
+        # rightmost n-2 columns of the top two rows in a bottom to top and right to left order
+        for dummy_column in range(column, 1, -1):
+            move_sequance += self.solve_row1_tile(dummy_column)
+            move_sequance += self.solve_row0_tile(dummy_column)
+
+        # what's left unsolved is upper left 2 by 2 portion
+        move_sequance += self.solve_2x2()
+        return move_sequance
 
 
 def get_matrix_number(matrix_width, coord_x, coord_y):
