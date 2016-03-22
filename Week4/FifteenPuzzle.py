@@ -250,9 +250,21 @@ class Puzzle:
         Check whether the puzzle satisfies the row zero invariant
         at the given column (col > 1)
         Returns a boolean
+        :param target_col:
         """
-        # replace with your code
-        return False
+        if self.get_number(0, target_col) != 0:
+            return False
+
+        for column in range(self.get_width()):
+            for row in range(self.get_height()):
+                if (row == 0 and column > target_col) or \
+                        (row == 1 and column >= target_col) or row > 1:
+                    expect_v = get_matrix_number(self.get_width(), row, column)
+                    current_v = self.get_number(row, column)
+                    if expect_v != current_v:
+                        return False
+
+        return True
 
     def row1_invariant(self, target_col):
         """
@@ -260,16 +272,43 @@ class Puzzle:
         at the given column (col > 1)
         Returns a boolean
         """
-        # replace with your code
-        return False
+        if not self.lower_row_invariant(1, target_col):
+            return False
+
+        for column in range(0, self.get_width()):
+            for row in range(2, self.get_height()):
+                expected_v = get_matrix_number(self.get_width(), row, column)
+                current_v = self.get_number(row, column)
+                if expected_v != current_v:
+                    return False
+
+        return True
 
     def solve_row0_tile(self, target_col):
         """
         Solve the tile in row zero at the specified column
         Updates puzzle and returns a move string
+        :param target_col:
         """
-        # replace with your code
-        return ""
+        assert self.row0_invariant(target_col)
+        move_sequence = 'ld'
+        self.update_puzzle(move_sequence)
+
+        # unpack tile row and column values
+        row, column = self.current_position(0, target_col)
+        # got lucky, target tile already in place
+        if row == 0 and column == target_col:
+            return move_sequence
+        else:
+            # target tile to position (1, j-1) and zero tile to (1, j-2)
+            step = self.move_tile(1, target_col - 1, row, column)
+            # use move string for a 2x3 puzzle
+            step += 'urdlurrdluldrruld'
+            self.update_puzzle(step)
+            move_sequence += step
+
+        # assert self.row0_invariant(target_col - 1)
+        return move_sequence
 
     def solve_row1_tile(self, target_col):
         """
