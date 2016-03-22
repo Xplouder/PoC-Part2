@@ -97,6 +97,7 @@ class Puzzle:
     def update_puzzle(self, move_string):
         """
         Updates the puzzle state based on the provided move string
+        :param move_string:
         """
         zero_row, zero_col = self.current_position(0, 0)
         for direction in move_string:
@@ -172,49 +173,74 @@ class Puzzle:
         """
         Solve tile in column zero on specified row (> 1)
         Updates puzzle and returns a move string
+        :param target_row:
         """
-        # replace with your code
-        return ""
+        assert self.lower_row_invariant(target_row, 0)
+        move_sequence = 'ur'
+        self.update_puzzle(move_sequence)
 
-    def move_tile(self, target_row, target_col, row, column):
-        # todo: rever este metodo
-        """
-        place a tile at target position;
-        target tile's current position must be either above the target position
-        (k < i) or on the same row to the left (i = k and l < j);
-        returns a move string
-        """
-        move_it = ''
-        combo = 'druld'
-
-        # calculate deltas
-        column_delta = target_col - column
-        row_delta = target_row - row
-
-        # always move up at first
-        move_it += row_delta * 'u'
-        # simplest case, both tiles in the same column, combo 'ld' shall go first
-        if column_delta == 0:
-            move_it += 'ld' + (row_delta - 1) * combo
+        row, column = self.current_position(target_row, 0)
+        # in case target tile is already in place
+        if row == target_row and column == 0:
+            # move tile zero to the right end of that row
+            step = (self.get_width() - 2) * 'r'
+            self.update_puzzle(step)
+            move_sequence += step
         else:
-            # tile is on the left form target, specific move first
-            if column_delta > 0:
-                move_it += column_delta * 'l'
-                if row == 0:
-                    move_it += (abs(column_delta) - 1) * 'drrul'
-                else:
-                    move_it += (abs(column_delta) - 1) * 'urrdl'
-            # tile is on the right from target, specific move first
-            elif column_delta < 0:
-                move_it += (abs(column_delta) - 1) * 'r'
-                if row == 0:
-                    move_it += abs(column_delta) * 'rdllu'
-                else:
-                    move_it += abs(column_delta) * 'rulld'
-            # apply common move as last
-            move_it += row_delta * combo
+            # target tile to position (i-1, 1)
+            #   zero tile to position (i-1, 0)
+            step = self.move_tile(target_row - 1, 1, row, column)
+            # use move string for a 3x2 puzzle to bring target tile into
+            # position (i, 0), then move tile zero to the right end of row i-1
+            step += 'ruldrdlurdluurddlu' + (self.get_width() - 1) * 'r'
+            self.update_puzzle(step)
+            move_sequence += step
 
-        return move_it
+        assert self.lower_row_invariant(target_row - 1, self.get_width() - 1)
+        return move_sequence
+
+    def move_tile(self, target_row, target_col, current_row, current_column):
+        """
+        Move a tile from current position to target position.
+        Target tile's current position must be either above the target position
+        (k < i) or on the same current_row to the left (i = k and l < j);
+        :return move_sequence: Represents the moves sequence to move the tile
+        from current position to the target position
+        """
+        move_sequence = ''
+        half_rotation_sequence = 'druld'
+
+        # calculate diffs
+        column_diff = target_col - current_column
+        row_diff = target_row - current_row
+
+        # move up
+        move_sequence += row_diff * 'u'
+
+        # tiles are in the same column
+        if column_diff == 0:
+            move_sequence += 'ld' + (row_diff - 1) * half_rotation_sequence
+        else:
+            # current tile is on the left of target tile
+            if column_diff > 0:
+                move_sequence += column_diff * 'l'
+                if current_row == 0:
+                    move_sequence += (column_diff - 1) * 'drrul'
+                else:
+                    move_sequence += (column_diff - 1) * 'urrdl'
+            # current tile is on the right of target tile
+            elif column_diff < 0:
+                # absolute value
+                column_diff *= -1
+                move_sequence += (column_diff - 1) * 'r'
+                if current_row == 0:
+                    move_sequence += column_diff * 'rdllu'
+                else:
+                    move_sequence += column_diff * 'rulld'
+            # apply common move as last
+            move_sequence += row_diff * half_rotation_sequence
+
+        return move_sequence
 
     #############################################################
     # Phase two methods
