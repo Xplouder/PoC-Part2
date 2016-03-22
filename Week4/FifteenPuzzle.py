@@ -135,17 +135,38 @@ class Puzzle:
         Check whether the puzzle satisfies the specified invariant
         at the given position in the bottom rows of the puzzle (target_row > 1)
         Returns a boolean
+        :param target_row:
+        :param target_col:
         """
-        # replace with your code
-        return False
+        if self.get_number(target_row, target_col) != 0:
+            return False
+
+        for row in range(self.get_height()):
+            for col in range(self.get_width()):
+                # current value
+                curr_v = self.get_number(row, col)
+                # expected value
+                expec_v = get_matrix_number(self.get_width(), row, col)
+                if row > target_row and curr_v != expec_v:
+                    return False
+                if col > target_col and row == target_row and curr_v != expec_v:
+                    return False
+
+        return True
 
     def solve_interior_tile(self, target_row, target_col):
         """
         Place correct tile at target position
         Updates puzzle and returns a move string
+        :param target_row:
+        :param target_col:
         """
-        # replace with your code
-        return ""
+        assert self.lower_row_invariant(target_row, target_col)
+        row, column = self.current_position(target_row, target_col)
+        movements_sequence = self.move_tile(target_row, target_col, row, column)
+        self.update_puzzle(movements_sequence)
+        assert self.lower_row_invariant(target_row, target_col - 1)
+        return movements_sequence
 
     def solve_col0_tile(self, target_row):
         """
@@ -154,6 +175,46 @@ class Puzzle:
         """
         # replace with your code
         return ""
+
+    def move_tile(self, target_row, target_col, row, column):
+        # todo: rever este metodo
+        """
+        place a tile at target position;
+        target tile's current position must be either above the target position
+        (k < i) or on the same row to the left (i = k and l < j);
+        returns a move string
+        """
+        move_it = ''
+        combo = 'druld'
+
+        # calculate deltas
+        column_delta = target_col - column
+        row_delta = target_row - row
+
+        # always move up at first
+        move_it += row_delta * 'u'
+        # simplest case, both tiles in the same column, combo 'ld' shall go first
+        if column_delta == 0:
+            move_it += 'ld' + (row_delta - 1) * combo
+        else:
+            # tile is on the left form target, specific move first
+            if column_delta > 0:
+                move_it += column_delta * 'l'
+                if row == 0:
+                    move_it += (abs(column_delta) - 1) * 'drrul'
+                else:
+                    move_it += (abs(column_delta) - 1) * 'urrdl'
+            # tile is on the right from target, specific move first
+            elif column_delta < 0:
+                move_it += (abs(column_delta) - 1) * 'r'
+                if row == 0:
+                    move_it += abs(column_delta) * 'rdllu'
+                else:
+                    move_it += abs(column_delta) * 'rulld'
+            # apply common move as last
+            move_it += row_delta * combo
+
+        return move_it
 
     #############################################################
     # Phase two methods
@@ -212,5 +273,16 @@ class Puzzle:
         return ""
 
 
+def get_matrix_number(matrix_width, coord_x, coord_y):
+    """
+    Given any matrix, return the "standard unique" value on matrices with first
+    of zero.
+    :param matrix_width:
+    :param coord_x:
+    :param coord_y:
+    :return:
+    """
+    return coord_x * matrix_width + coord_y
+
 # Start interactive simulation
-poc_fifteen_gui.FifteenGUI(Puzzle(4, 4))
+# poc_fifteen_gui.FifteenGUI(Puzzle(4, 4))
